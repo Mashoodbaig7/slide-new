@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Carousel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .carousel {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .carousel-button-left {
+            left: 10px;
+        }
+
+        .carousel-button-right {
+            right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Responsive Carousel -->
+    <div class="carousel container mx-auto my-8">
+        <div class="carousel-track">
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x600/4A90E2/ffffff?text=Slide+1" alt="Slide 1" class="w-full h-64 md:h-96 object-cover">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x600/50E3C2/ffffff?text=Slide+2" alt="Slide 2" class="w-full h-64 md:h-96 object-cover">
+            </div>
+            <div class="carousel-slide">
+                <img src="https://via.placeholder.com/1200x600/9013FE/ffffff?text=Slide+3" alt="Slide 3" class="w-full h-64 md:h-96 object-cover">
+            </div>
+        </div>
+
+        <!-- Carousel Buttons -->
+        <button class="carousel-button carousel-button-left">&larr;</button>
+        <button class="carousel-button carousel-button-right">&rarr;</button>
+    </div>
+
+    <script>
+        const track = document.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.querySelector('.carousel-button-right');
+        const prevButton = document.querySelector('.carousel-button-left');
+
+        let slideWidth = slides[0].getBoundingClientRect().width;
+        let currentIndex = 0;
+
+        // Arrange the slides next to each other
+        const setSlidePosition = (slide, index) => {
+            slide.style.left = slideWidth * index + 'px';
+        };
+        slides.forEach(setSlidePosition);
+
+        // Move to the next slide
+        const moveToSlide = (track, currentSlide, targetSlide) => {
+            track.style.transform = 'translateX(-' + targetSlide.style.left + ')';
+        };
+
+        // When right button is clicked
+        nextButton.addEventListener('click', () => {
+            currentIndex++;
+            if (currentIndex === slides.length) {
+                currentIndex = 0;
+            }
+            moveToSlide(track, slides[currentIndex], slides[currentIndex]);
+        });
+
+        // When left button is clicked
+        prevButton.addEventListener('click', () => {
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = slides.length - 1;
+            }
+            moveToSlide(track, slides[currentIndex], slides[currentIndex]);
+        });
+
+        // Update slideWidth on window resize
+        window.addEventListener('resize', () => {
+            slideWidth = slides[0].getBoundingClientRect().width;
+            slides.forEach(setSlidePosition);
+            moveToSlide(track, slides[currentIndex], slides[currentIndex]);
+        });
+    </script>
+</body>
+</html>
